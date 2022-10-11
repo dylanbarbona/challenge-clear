@@ -5,22 +5,22 @@ export class NoteResponse {
   @ApiProperty({
     example: 1,
   })
-  id: string | number;
+  readonly id: string | number;
 
   @ApiProperty({
     example: 'Texto',
   })
-  text: string;
+  readonly text: string;
 
   @ApiProperty({
     example: new Date(),
   })
-  createdAt: Date;
+  readonly createdAt: Date;
 
   @ApiProperty({
     example: new Date(),
   })
-  updatedAt: Date;
+  readonly updatedAt: Date;
 
   constructor(note: Note) {
     this.id = note._id;

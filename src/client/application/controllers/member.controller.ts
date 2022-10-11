@@ -3,10 +3,12 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Inject,
   Param,
   Post,
   Put,
+  Res,
 } from '@nestjs/common';
 import {
   MEMBER_SERVICE_PROVIDER,
@@ -15,6 +17,7 @@ import {
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { MemberResponse } from '../responses/member.response';
 import { CreateMemberDto, UpdateMemberDto } from '../dto/member.dto';
+import { Response } from 'express';
 
 @Controller('members')
 @ApiTags('Member')
@@ -27,18 +30,20 @@ export class MemberController {
   @Get()
   @ApiOperation({ summary: 'Search members' })
   @ApiResponse({ type: [MemberResponse] })
-  async findAll() {
+  async findAll(@Res() response: Response) {
     const members = await this.memberService.findAll();
-    return members.map((member) => new MemberResponse(member));
+    response
+      .status(HttpStatus.OK)
+      .json(members.map((member) => new MemberResponse(member)));
   }
 
   @Get(':id')
   @ApiParam({ name: 'id' })
   @ApiOperation({ summary: 'Get member' })
   @ApiResponse({ type: MemberResponse })
-  async get(@Param('id') id) {
+  async get(@Param('id') id, @Res() response: Response) {
     const member = await this.memberService.get(id);
-    return new MemberResponse(member);
+    response.status(HttpStatus.OK).json(new MemberResponse(member));
   }
 
   @Post()
@@ -46,9 +51,10 @@ export class MemberController {
   @ApiResponse({ type: MemberResponse })
   async create(
     @Body() createMemberDto: CreateMemberDto,
-  ): Promise<MemberResponse> {
+    @Res() response: Response,
+  ) {
     const member = await this.memberService.create(createMemberDto);
-    return new MemberResponse(member);
+    response.status(HttpStatus.CREATED).json(new MemberResponse(member));
   }
 
   @Put(':id')
@@ -58,18 +64,19 @@ export class MemberController {
   async update(
     @Param('id') id: number | string,
     @Body() updateMemberDto: UpdateMemberDto,
+    @Res() response: Response,
   ) {
     const member = await this.memberService.update(id, updateMemberDto);
-    return new MemberResponse(member);
+    response.status(HttpStatus.OK).json(new MemberResponse(member));
   }
 
   @Delete(':id')
   @ApiParam({ name: 'id' })
   @ApiOperation({ summary: 'Delete member' })
   @ApiResponse({ type: MemberResponse })
-  async delete(@Param('id') id: number | string) {
+  async delete(@Param('id') id: number | string, @Res() response: Response) {
     const member = await this.memberService.delete(id);
-    return new MemberResponse(member);
+    response.status(HttpStatus.OK).json(new MemberResponse(member));
   }
 
   @Post(':member_id/:client_id')
@@ -77,8 +84,12 @@ export class MemberController {
   @ApiParam({ name: 'client_id' })
   @ApiOperation({ summary: 'Change client' })
   @ApiResponse({ type: MemberResponse })
-  async change(@Param('member_id') member_id, @Param('client_id') client_id) {
+  async change(
+    @Param('member_id') member_id,
+    @Param('client_id') client_id,
+    @Res() response: Response,
+  ) {
     const member = await this.memberService.change(member_id, client_id);
-    return new MemberResponse(member);
+    response.status(HttpStatus.OK).json(new MemberResponse(member));
   }
 }

@@ -29,7 +29,7 @@ export class ClientResponse {
   public readonly city;
 
   @ApiProperty({
-    example: 'Argentiina',
+    example: 'Argentina',
   })
   public readonly state;
 

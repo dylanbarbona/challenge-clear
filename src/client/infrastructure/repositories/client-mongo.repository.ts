@@ -14,8 +14,8 @@ export class ClientMongoRepository implements ClientRepository {
   ) {}
 
   async find(query: SearchClientsQuery): Promise<Client[]> {
-    const company_name = new RegExp(this.escapeRegex(query.name), 'gi');
-    const state = new RegExp(this.escapeRegex(query.state), 'gi');
+    const company_name = new RegExp(query.name || '', 'gi');
+    const state = new RegExp(query.state || '', 'gi');
 
     return this.clientModel
       .find({
@@ -58,15 +58,11 @@ export class ClientMongoRepository implements ClientRepository {
   async delete(id: string | number): Promise<Client> {
     let client = null;
     try {
-      client = this.clientModel.findByIdAndDelete(id);
+      client = await this.clientModel.findByIdAndDelete(id);
     } catch (e) {
       throw new NotFoundException();
     }
     if (!client) throw new NotFoundException();
     return client;
-  }
-
-  private escapeRegex(text) {
-    return (text || '').replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
   }
 }

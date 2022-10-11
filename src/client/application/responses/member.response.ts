@@ -7,28 +7,28 @@ export class MemberResponse {
   @ApiProperty({
     example: '1',
   })
-  id?: string;
+  readonly id?: string;
 
   @ApiProperty({
     example: 'Member',
   })
-  name: string;
+  readonly name: string;
 
   @ApiProperty({
     example: '2914727552',
   })
-  phone: string;
+  readonly phone: string;
 
   @ApiProperty({
     example: 'example@example.com',
   })
-  email: string;
+  readonly email: string;
 
   @ApiProperty({ type: ClientResponse })
-  client: ClientResponse;
+  readonly client: ClientResponse;
 
   @ApiProperty({ type: [NoteResponse] })
-  notes: NoteResponse[];
+  readonly notes: NoteResponse[];
 
   constructor(member: Member) {
     this.id = member._id;
